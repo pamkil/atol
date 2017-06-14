@@ -1,6 +1,6 @@
 <?php
 
-namespace pamkil\atol\Message;
+namespace Omnipay\Atol\Message;
 
 class ActionResponse extends RestResponse
 {

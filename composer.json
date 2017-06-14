@@ -1,7 +1,13 @@
 {
-  "name": "omnipay/atol",
+  "name": "pamkil/omnipay-atol",
   "type": "library",
   "description": "Check atol gateway for Omnipay",
+  "keywords": [
+    "atol",
+    "gateway",
+    "omnipay"
+  ],
+  "license": "MIT",
   "authors": [
     {
       "name": "Ildar",
@@ -19,7 +25,7 @@
   },
   "autoload": {
     "psr-4": {
-      "pamkil\\atol\\": "src/"
+      "Omnipay\\Atol\\": "src/"
     }
   }
 }

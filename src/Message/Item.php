@@ -3,7 +3,7 @@
  * Cart Item
  */
 
-namespace pamkil\atol\Message;
+namespace Omnipay\Atol\Message;
 
 use Omnipay\Common\Item as OmnipayItem;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace pamkil\atol;
+namespace Omnipay\Atol;
 
-use pamkil\atol\Message\ActionRequest;
-use pamkil\atol\Message\ReportRequest;
-use pamkil\atol\Message\ReportResponse;
-use pamkil\atol\Message\RestTokenRequest;
+use Omnipay\Atol\Message\ActionRequest;
+use Omnipay\Atol\Message\ReportRequest;
+use Omnipay\Atol\Message\ReportResponse;
+use Omnipay\Atol\Message\RestTokenRequest;
 use Omnipay\Common\AbstractGateway;
 
 /**
@@ -83,7 +83,7 @@ use Omnipay\Common\AbstractGateway;
  *          ->setName('Bouquet');
  *      $sell->setItems([$item]);
  *
- *      $sell->setCallBackUrl('api.new-flowers.ru/v1/acquiring/atoll')
+ *      $sell->setCallBackUrl('site.ru/atoll')
  *          ->setExternalId(1234213515611)
  *          //->setInn('7729656202')
  *          //->setPaymentAddress('test1.atol.ru')
@@ -210,7 +210,7 @@ class Gateway extends AbstractGateway
      *
      * @param string $class
      * @param array $parameters
-     * @return \pamkil\atol\Message\AbstractRestRequest $class
+     * @return \Omnipay\Atol\Message\AbstractRestRequest $class
      */
     public function createRequest($class, array $parameters = array())
     {

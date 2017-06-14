@@ -1,13 +1,13 @@
 <?php
 
-namespace pamkil\atol\Message;
+namespace Omnipay\Atol\Message;
 
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\AbstractRequest;
 
 /**
  * Class AbstractRestRequest
- * @package pamkil\atol\Message
+ * @package Omnipay\Atol\Message
  * @method $this setParameter($name, $value);
  */
 abstract class AbstractRestRequest extends AbstractRequest

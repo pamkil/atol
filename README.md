@@ -25,27 +25,51 @@ require_once (__DIR__.'/vendor/autoload.php');
 use Omnipay\Omnipay;
  ```
 3. Настройкой модуля для выставления электронных чеков:
- * на кошелек Яндекс.Деньги:
  ```
-$gateway = Omnipay::create('\pamkil\Atolll\GatewayIndividual');
-$gateway->setAccount([номер_кошелька]);
-$gateway->setLabel([номер_заказа]);
-$gateway->setPassword([секретное_слово]);
-$gateway->setOrderId([номер_заказа]);
-$gateway->setMethod([тип_оплаты_PC_или_AC]);
-$gateway->setReturnUrl([адрес_страницы_успеха]);
-$gateway->setCancelUrl([адрес_страницы_отказа]);
+$gateway = Omnipay::create('\Omnipay\Atol\Gateway');
+$gateway->setLogin([логин]);
+$gateway->setPass([пароль]);
+$gateway->setInn([ИНН Юр. лица или ИП]);
+$gateway->setPaymentAddress([url сайта]);
+$gateway->setSno([Применяемая система налогообложения]); 
+        //osn – общая СН;
+        //usn_income – упрощенная СН (доходы);
+        //usn_income_outcome – упрощенная СН (доходы минус расходы);
+        //envd – единый налог на вмененный доход;
+        //esn – единый сельскохозяйственный налог;
+        //patent – патентная СН. 
+
  ```
 5. Отправкой запроса
  ```
-$response = $gateway->purchase(['amount' => '1.00', 'currency' => 'RUB', 'testMode' => true, 'FormComment'=>'test'])->send();
+    $sell = $gateway->sell();
+    $item = new Omnipay\Atol\Message\Item();
+    $item
+        ->setSum(15)
+        ->setTax('none')
+        ->setPrice(15)
+        ->setQuantity(1)
+        ->setTaxSum(0)
+        ->setName('Bouquet');
+    $sell->setItems([$item]);
+    
+    $sell->setCallBackUrl('site.ru/v1/acquiring/atoll')
+        ->setExternalId(1234213515611)
+        //->setInn('7729656202')
+        //->setPaymentAddress('test1.atol.ru')
+        ->setDatePayment('14.06.2017 15:01:01')
+        ->setEmail('sd@df.ru')
+        //->setPhone('9123456789') or email or phone
+        ->setSno('osn')
+        ->setTotalSum(15)
+        ->setTypeSum(1);
+    $responseSell = $sell->send();
  ```
 6. Обработкой ответа 
 ```
 if ($response->isSuccessful()) {
-    print_r($response);
-} elseif ($response->isRedirect()) {
-    $response->redirect();
+    print_r($response->getData());
+    $uuid = $responseSell->getUuid();
 } else {
     echo $response->getMessage();
 }

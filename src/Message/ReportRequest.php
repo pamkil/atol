@@ -1,10 +1,10 @@
 <?php
 
-namespace pamkil\atol\Message;
+namespace Omnipay\Atol\Message;
 
 /**
  * Class ActionRequest
- * @package pamkil\atol\Message
+ * @package Omnipay\Atol\Message
  * @method ActionRequest setParameter($key, $value)
  */
 class ReportRequest extends AbstractRestRequest
