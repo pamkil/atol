@@ -8,7 +8,7 @@
 ```
 composer require pamkil/atol
 ```
-или включением в файл `composer.json` пакета `pamkil/atol` с выполнением команды:
+или включением в файл `composer.json` пакета `pamkil/omnipay-atol` с выполнением команды:
 ```
 composer update
 ```
