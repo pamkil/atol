@@ -6,7 +6,7 @@
 ###Установка модуля
 Установка модуля производится через [Composer](https://getcomposer.org/) запуском команды:
 ```
-composer require pamkil/atol
+composer require pamkil/omnipay-atol
 ```
 или включением в файл `composer.json` пакета `pamkil/omnipay-atol` с выполнением команды:
 ```
