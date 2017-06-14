@@ -1,0 +1,25 @@
+{
+  "name": "omnipay/atol",
+  "type": "library",
+  "description": "Check atol gateway for Omnipay",
+  "authors": [
+    {
+      "name": "Ildar",
+      "email": "pamkil@ya.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.0",
+    "omnipay/common": "~2.0"
+  },
+  "require-dev": {
+    "php": ">=5.3.0",
+    "omnipay/common": "~2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "pamkil\\": "src/"
+    }
+  }
+}
