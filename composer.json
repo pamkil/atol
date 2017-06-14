@@ -14,13 +14,12 @@
       "email": "pamkil@ya.ru"
     }
   ],
-  "minimum-stability": "dev",
   "require": {
-    "php": ">=5.3.0",
+    "php": ">=5.6.0",
     "omnipay/common": "~2.0"
   },
   "require-dev": {
-    "php": ">=5.3.0",
+    "php": ">=5.6.0",
     "omnipay/common": "~2.0"
   },
   "autoload": {
