@@ -148,7 +148,6 @@ abstract class AbstractRestRequest extends AbstractRequest
         if (is_null($this->getParameter($name))){
             return null;
         }
-        $amount = floatval($this->getParameter($name));
-        return number_format($amount, 2, '.', '');
+        return floatval($this->getParameter($name));
     }
 }

@@ -29,17 +29,17 @@ class ReportResponse extends RestResponse
         return $this->getParam('timestamp');
     }
 
-    public function getGroup_code()
+    public function getGroupCode()
     {
         return $this->getParam('group_code');
     }
 
-    public function getDaemon_code()
+    public function getDaemonCode()
     {
         return $this->getParam('daemon_code');
     }
 
-    public function getDevice_code()
+    public function getDeviceCode()
     {
         return $this->getParam('device_code');
     }

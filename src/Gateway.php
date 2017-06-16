@@ -189,7 +189,7 @@ class Gateway extends AbstractGateway
      */
     public function hasToken()
     {
-        $token = $this->getParameter('token');
+        $token = $this->getTestMode() ? null : $this->getParameter('token');
 
         $expires = $this->getTokenExpires();
         if (!empty($expires) && !is_numeric($expires)) {

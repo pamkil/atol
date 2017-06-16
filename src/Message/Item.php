@@ -101,18 +101,17 @@ class Item extends OmnipayItem
         return $this->getSumFormat('price');
     }
 
-    public function getSumFormat($name, $decimals = 2)
+    public function getSumFormat($name)
     {
         if (is_null($this->getParameter($name))) {
             return null;
         }
-        $amount = floatval($this->getParameter($name));
-        return number_format($amount, $decimals, '.', '');
+        return floatval($this->getParameter($name));
     }
 
     public function getQuantity()
     {
-        return $this->getSumFormat('quantity', 3);
+        return $this->getSumFormat('quantity');
     }
 }
 

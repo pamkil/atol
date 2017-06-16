@@ -31,6 +31,7 @@ $gateway->setLogin([логин]);
 $gateway->setPass([пароль]);
 $gateway->setInn([ИНН Юр. лица или ИП]);
 $gateway->setPaymentAddress([url сайта]);
+$gateway->setGroupCode([code_group]);
 $gateway->setSno([Применяемая система налогообложения]); 
         //osn – общая СН;
         //usn_income – упрощенная СН (доходы);
@@ -40,9 +41,10 @@ $gateway->setSno([Применяемая система налогообложе
         //patent – патентная СН. 
 
  ```
-5. Отправкой запроса
+4. Отправкой запроса
  ```
     $sell = $gateway->sell();
+    
     $item = new Omnipay\Atol\Message\Item();
     $item
         ->setSum(15)
@@ -51,9 +53,10 @@ $gateway->setSno([Применяемая система налогообложе
         ->setQuantity(1)
         ->setTaxSum(0)
         ->setName('Bouquet');
-    $sell->setItems([$item]);
-    
-    $sell->setCallBackUrl('site.ru/v1/acquiring/atoll')
+        
+    $sell
+        ->setItems([$item])
+        ->setCallBackUrl('site.ru/atoll')
         ->setExternalId(1234213515611)
         //->setInn('7729656202')
         //->setPaymentAddress('test1.atol.ru')
@@ -63,14 +66,27 @@ $gateway->setSno([Применяемая система налогообложе
         ->setSno('osn')
         ->setTotalSum(15)
         ->setTypeSum(1);
+        
     $responseSell = $sell->send();
  ```
 6. Обработкой ответа 
 ```
-if ($response->isSuccessful()) {
-    print_r($response->getData());
+if ($responseSell->isSuccessful()) {
+    print_r($responseSell->getData());
     $uuid = $responseSell->getUuid();
 } else {
-    echo $response->getMessage();
+    //Ошибки
+    echo $responseSell->getMessage();
 }
 ```
+7. Получение результата обработки документа
+```
+ $responseReport = $gateway->operationComplete($uuid);
+ $data = $responseReport->getData();
+ $status = $responseReport->getStatus();
+ $deviceCode = $responseReport->getDeviceCode();
+ ...
+ see class \Omnipay\Atol\Message\ReportResponse
+```
+
+Документация по работе с АТОЛ см на сайте [fs.atol.ru](http://fs.atol.ru/)
