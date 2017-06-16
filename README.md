@@ -69,7 +69,7 @@ $gateway->setSno([Применяемая система налогообложе
         
     $responseSell = $sell->send();
  ```
-6. Обработкой ответа 
+5. Обработкой ответа 
 ```
 if ($responseSell->isSuccessful()) {
     print_r($responseSell->getData());
@@ -79,7 +79,7 @@ if ($responseSell->isSuccessful()) {
     echo $responseSell->getMessage();
 }
 ```
-7. Получение результата обработки документа
+6. Получение результата обработки документа
 ```
  $responseReport = $gateway->operationComplete($uuid);
  $data = $responseReport->getData();
@@ -89,4 +89,4 @@ if ($responseSell->isSuccessful()) {
  see class \Omnipay\Atol\Message\ReportResponse
 ```
 
-Документация по работе с АТОЛ см на сайте [fs.atol.ru](http://fs.atol.ru/)
+Документация по работе с АТОЛ см. на сайте [fs.atol.ru](http://fs.atol.ru/)
