@@ -23,6 +23,8 @@ class ReportRequest extends AbstractRestRequest
      */
     protected function getEndpoint()
     {
+        $this->validate('groupCode', 'transactionId');
+
         return parent::getEndpoint() . '/' . $this->getGroupCode() . '/report/' . $this->getTransactionId();
     }
 

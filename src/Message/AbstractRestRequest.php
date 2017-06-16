@@ -67,6 +67,8 @@ abstract class AbstractRestRequest extends AbstractRequest
 
     public function sendData($data)
     {
+        $this->validate('token');
+
         // don't throw exceptions for 4xx errors
         $this->httpClient->getEventDispatcher()->addListener(
             'request.error',

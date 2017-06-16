@@ -6,6 +6,8 @@ class RestTokenRequest extends AbstractRestRequest
 {
     public function getData()
     {
+        $this->validate('login', 'pass');
+
         return [
             'login' => $this->getLogin(),
             'pass' => $this->getPass(),
