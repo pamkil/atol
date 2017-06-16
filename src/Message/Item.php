@@ -20,7 +20,7 @@ class Item extends OmnipayItem
 {
     public function getSum()
     {
-        return $this->getParameter('sum');
+        return $this->getSumFormat('sum');
     }
 
     public function setSum($value)
@@ -30,7 +30,7 @@ class Item extends OmnipayItem
 
     public function getTax()
     {
-        return $this->getParameter('tax');
+        return $this->getSumFormat('tax');
     }
 
     public function setTax($value)
@@ -40,7 +40,7 @@ class Item extends OmnipayItem
 
     public function getTaxSum()
     {
-        return $this->getParameter('taxSum');
+        return $this->getSumFormat('taxSum');
     }
 
     public function setTaxSum($value)
@@ -94,6 +94,25 @@ class Item extends OmnipayItem
     public function setTaxVat118()
     {
         return $this->setTax('vat118');
+    }
+
+    public function getPrice()
+    {
+        return $this->getSumFormat('price');
+    }
+
+    public function getSumFormat($name, $decimals = 2)
+    {
+        if (is_null($this->getParameter($name))) {
+            return null;
+        }
+        $amount = floatval($this->getParameter($name));
+        return number_format($amount, $decimals, '.', '');
+    }
+
+    public function getQuantity()
+    {
+        return $this->getSumFormat('quantity', 3);
     }
 }
 

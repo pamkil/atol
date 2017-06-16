@@ -86,7 +86,6 @@ abstract class AbstractRestRequest extends AbstractRequest
                 $this->getEndpoint() . '?' . http_build_query($data),
                 [
                     'Accept' => 'application/json',
-//                    'Authorization' => 'Bearer ' . $this->getToken(),
                     'Content-type' => 'application/json',
                 ]
             );
@@ -97,7 +96,6 @@ abstract class AbstractRestRequest extends AbstractRequest
                 $this->getEndpoint() . '?' . http_build_query($token),
                 [
                     'Accept' => 'application/json',
-//                    'Authorization' => 'Bearer ' . $this->getToken(),
                     'Content-type' => 'application/json',
                 ],
                 $this->toJSON($data)
@@ -143,5 +141,14 @@ abstract class AbstractRestRequest extends AbstractRequest
     public function setGroupCode($value)
     {
         return $this->setParameter('groupCode', $value);
+    }
+
+    public function getSumFormat($name)
+    {
+        if (is_null($this->getParameter($name))){
+            return null;
+        }
+        $amount = floatval($this->getParameter($name));
+        return number_format($amount, 2, '.', '');
     }
 }

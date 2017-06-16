@@ -175,7 +175,7 @@ class ActionRequest extends AbstractRestRequest
 
     public function getTotalSum()
     {
-        return $this->getParameter('totalSum');
+        return $this->getSumFormat('totalSum');
     }
 
     public function setTotalSum($value)
@@ -185,7 +185,7 @@ class ActionRequest extends AbstractRestRequest
 
     public function getTax()
     {
-        return $this->getParameter('tax');
+        return $this->getSumFormat('tax');
     }
 
     public function setTax($value)
