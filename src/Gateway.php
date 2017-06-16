@@ -228,7 +228,7 @@ class Gateway extends AbstractGateway
      * @param array $options
      * @return ActionRequest
      */
-    public function action(array $options)
+    public function action(array $options = [])
     {
         return $this->createRequest(ActionRequest::class, $options);
     }
