@@ -264,13 +264,13 @@ class Gateway extends AbstractGateway
      * чек «Расход»
      * @return ActionRequest
      */
-    public function sellBuy()
+    public function buy()
     {
         return $this->action()->setAction('buy');
     }
 
     /**
-     * чек «Расход»
+     * чек «Возврат расхода»
      * @return ActionRequest
      */
     public function buyRefund()
@@ -298,7 +298,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * чек «Коррекция расхода»
+     * чек «Получение результата обработки документа»
      * @param array $options
      * @return ReportResponse
      */
