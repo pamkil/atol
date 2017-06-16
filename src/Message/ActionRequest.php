@@ -2,6 +2,8 @@
 
 namespace Omnipay\Atol\Message;
 
+use Omnipay\Common\Exception\InvalidRequestException;
+
 /**
  * Class ActionRequest
  * @package Omnipay\Atol\Message
@@ -12,7 +14,7 @@ class ActionRequest extends AbstractRestRequest
 {
     public function getData()
     {
-
+        $this->validate('externalId', 'inn', 'datePayment', 'paymentAddress', 'totalSum', 'typeSum', 'totalSum');
         $data = [
             'external_id' => (string)$this->getExternalId(),
             'service' => [
@@ -23,6 +25,7 @@ class ActionRequest extends AbstractRestRequest
             'timestamp' => $this->getDatePayment(),// '29.05.2017 17:56:18',
         ];
         if ($this->getAction() == 'sell_correction' || $this->getAction() == 'buy_correction') {
+            $this->validate('tax');
             $data['correction'] = [
                 'attributes' => [
                     'tax' => $this->getTax(),
@@ -36,6 +39,9 @@ class ActionRequest extends AbstractRestRequest
                 ],
             ];
         } else {
+            if (empty($this->getEmail()) && $this->getPhone()) {
+                $this->validate('email', 'phone');
+            }
             $data['receipt'] = [
                 'attributes' => [
                     'email' => (string)$this->getEmail(),
@@ -54,6 +60,11 @@ class ActionRequest extends AbstractRestRequest
 
         /** @var Item $item */
         foreach ($this->getItems() as $item) {
+            if (empty($item->getName()) || empty($item->getPrice()) || empty($item->getQuantity())
+                || empty($item->getSum()) || empty($item->getTax())
+            ) {
+                throw new InvalidRequestException("The Item parameter name, price, quantity, sum and tax is required");
+            }
             $data['receipt']['items'][] = [
                 'name' => $item->getName(),
                 'price' => $item->getPrice(),
@@ -75,6 +86,7 @@ class ActionRequest extends AbstractRestRequest
      */
     protected function getEndpoint()
     {
+        $this->validate('groupCode', 'action');
         return parent::getEndpoint() . '/' . $this->getGroupCode() . '/' . $this->getAction();
     }
 
