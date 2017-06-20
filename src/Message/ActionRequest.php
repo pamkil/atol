@@ -44,8 +44,8 @@ class ActionRequest extends AbstractRestRequest
             }
             $data['receipt'] = [
                 'attributes' => [
-                    'email' => (string)$this->getEmail(),
-                    'phone' => (string)$this->getPhone(),
+                    'email' => (string) $this->getTestMode() ? $this->getTestEmail() : $this->getEmail(),
+                    'phone' => (string) $this->getTestMode() ? $this->getTestPhone() : $this->getPhone(),
                     'sno' => $this->getSno(),
                 ],
                 'payments' => [

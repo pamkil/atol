@@ -152,4 +152,24 @@ abstract class AbstractRestRequest extends AbstractRequest
         }
         return floatval($this->getParameter($name));
     }
+
+    public function getTestEmail()
+    {
+        return $this->getParameter('testEmail');
+    }
+
+    public function setTestEmail($value)
+    {
+        return $this->setParameter('testEmail', $value);
+    }
+
+    public function getTestPhone()
+    {
+        return $this->getParameter('testPhone');
+    }
+
+    public function setTestPhone($value)
+    {
+        return $this->setParameter('testPhone', $value);
+    }
 }
