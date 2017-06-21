@@ -39,15 +39,15 @@ class ActionRequest extends AbstractRestRequest
                 ],
             ];
         } else {
-            $this->setEmail((string) $this->getTestMode() ? $this->getTestEmail() : $this->getEmail());
-            $this->setPhone((string) $this->getTestMode() ? $this->getTestPhone() : $this->getPhone());
+            $this->setEmail($this->getTestMode() ? $this->getTestEmail() : $this->getEmail());
+            $this->setPhone($this->getTestMode() ? $this->getTestPhone() : $this->getPhone());
             if (empty($this->getEmail()) && empty($this->getPhone())) {
                 $this->validate('email', 'phone');
             }
             $data['receipt'] = [
                 'attributes' => [
-                    'email' => (string) $this->getTestMode() ? $this->getTestEmail() : $this->getEmail(),
-                    'phone' => (string) $this->getTestMode() ? $this->getTestPhone() : $this->getPhone(),
+                    'email' => (string) $this->getEmail(),
+                    'phone' => (string) $this->getPhone(),
                     'sno' => $this->getSno(),
                 ],
                 'payments' => [
