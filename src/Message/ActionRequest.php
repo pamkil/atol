@@ -20,7 +20,7 @@ class ActionRequest extends AbstractRestRequest
             'service' => [
                 'callback_url' => $this->getCallBackUrl(),
                 'inn' => $this->getInn(),
-                'payment_address' => $this->getPaymentAddress()
+                'payment_address' => $this->getPaymentAddress(),
             ],
             'timestamp' => $this->getDatePayment(),// '29.05.2017 17:56:18',
         ];
@@ -34,12 +34,14 @@ class ActionRequest extends AbstractRestRequest
                 'payments' => [
                     [
                         'sum' => $this->getTotalSum(),
-                        'type' => $this->getTypeSum()
+                        'type' => $this->getTypeSum(),
                     ]
                 ],
             ];
         } else {
-            if (empty($this->getEmail()) && $this->getPhone()) {
+            $this->setEmail((string) $this->getTestMode() ? $this->getTestEmail() : $this->getEmail());
+            $this->setPhone((string) $this->getTestMode() ? $this->getTestPhone() : $this->getPhone());
+            if (empty($this->getEmail()) && empty($this->getPhone())) {
                 $this->validate('email', 'phone');
             }
             $data['receipt'] = [
@@ -51,7 +53,7 @@ class ActionRequest extends AbstractRestRequest
                 'payments' => [
                     [
                         'sum' => $this->getTotalSum(),
-                        'type' => $this->getTypeSum()
+                        'type' => $this->getTypeSum(),
                     ]
                 ],
                 'total' => $this->getTotalSum(),
