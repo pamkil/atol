@@ -30,7 +30,7 @@ class Item extends OmnipayItem
 
     public function getTax()
     {
-        return $this->getSumFormat('tax');
+        return $this->getParameter('tax');
     }
 
     public function setTax($value)
