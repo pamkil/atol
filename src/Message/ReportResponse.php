@@ -17,16 +17,16 @@ class ReportResponse extends RestResponse
     public function getError()
     {
         return $this->getParam('error');
-//          "error": {
-//              "code": 2,
-//              "text": "Некорректный запрос",
-//              "type": "system"
-//          },
     }
 
     public function getTimestamp()
     {
-        return $this->getParam('timestamp');
+        $date = $this->getParam('timestamp');
+        if (!empty($date)) {
+            $date = (new \DateTime($date))->format('Y-m-d H:i:s');
+        }
+
+        return $date;
     }
 
     public function getGroupCode()
@@ -52,16 +52,5 @@ class ReportResponse extends RestResponse
     public function getPayload()
     {
         return $this->getParam('payload');
-//      "payload": {
-//          "total": 1598,
-//          "fns_site": "www.nalog.ru",
-//          "fn_number": "1110000100238211",
-//          "shift_number": 23,
-//          "receipt_datetime": "12.04.2017 20:16:00",
-//          "fiscal_receipt_number": 6,
-//          "fiscal_document_number": 133,
-//          "ecr_registration_number": "0000111118041361",
-//          "fiscal_document_attribute": 3449555941
-//      },
     }
 }
