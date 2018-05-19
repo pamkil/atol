@@ -1,4 +1,4 @@
-Модуль оплаты yandexmoney-omnipay необходим для интеграции с сервисом [online.atol.ru](http://online.atol.ru/) на базе [Omnipay](http://omnipay.thephpleague.com/).
+Модуль необходим для интеграции с сервисом [online.atol.ru](http://online.atol.ru/) на базе [Omnipay](http://omnipay.thephpleague.com/).
 
 ###Требования к Omnipay:
 * версия 2.x
