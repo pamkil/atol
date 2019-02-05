@@ -2,6 +2,8 @@
 
 namespace Omnipay\Atol\Message;
 
+use DateTime;
+use Omnipay\Atol\Constant;
 use Omnipay\Common\Exception\InvalidRequestException;
 
 /**
@@ -12,83 +14,154 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 class ActionRequest extends AbstractRestRequest
 {
-    public function getData()
+    /**
+     * @return array|mixed
+     * @throws InvalidRequestException
+     * @throws \Exception
+     */
+    public function getData(): array
     {
         $this->validate('externalId', 'inn', 'datePayment', 'paymentAddress', 'totalSum', 'typeSum', 'totalSum');
         $data = [
             'external_id' => (string)$this->getExternalId(),
             'service' => [
                 'callback_url' => $this->getCallBackUrl(),
-                'inn' => $this->getInn(),
-                'payment_address' => $this->getPaymentAddress(),
             ],
-            'timestamp' => $this->getDatePayment(),// '29.05.2017 17:56:18',
+            'timestamp' => $this->getDatePayment(),
         ];
+
         if ($this->getAction() == 'sell_correction' || $this->getAction() == 'buy_correction') {
-            $this->validate('tax');
-            $data['correction'] = [
-                'attributes' => [
-                    'tax' => $this->getTax(),
-                    'sno' => $this->getSno(),
-                ],
-                'payments' => [
-                    [
-                        'sum' => $this->getTotalSum(),
-                        'type' => $this->getTypeSum(),
-                    ]
-                ],
-            ];
+            $data['correction'] = $this->getDataCorrection();
         } else {
-            $this->setEmail($this->getTestMode() ? $this->getTestEmail() : $this->getEmail());
-            $this->setPhone($this->getTestMode() ? $this->getTestPhone() : $this->getPhone());
-            if (empty($this->getEmail()) && empty($this->getPhone())) {
-                $this->validate('email', 'phone');
-            }
-            $data['receipt'] = [
-                'attributes' => [
-                    'email' => (string) $this->getEmail(),
-                    'phone' => (string) $this->getPhone(),
-                    'sno' => $this->getSno(),
-                ],
-                'payments' => [
-                    [
-                        'sum' => $this->getTotalSum(),
-                        'type' => $this->getTypeSum(),
-                    ]
-                ],
-                'total' => $this->getTotalSum(),
-            ];
+            $data['receipt'] = $this->getDataReceipt();
         }
 
-        /** @var Item $item */
-        foreach ($this->getItems() as $item) {
-            if (empty($item->getName()) || empty($item->getPrice()) || empty($item->getQuantity())
-                || empty($item->getSum()) || empty($item->getTax())
-            ) {
-                throw new InvalidRequestException("The Item parameter name, price, quantity, sum and tax is required");
-            }
-            $data['receipt']['items'][] = [
-                'name' => $item->getName(),
-                'price' => $item->getPrice(),
-                'quantity' => $item->getQuantity(),
-                'sum' => $item->getSum(),
-                'tax' => $item->getTax(),
-                'tax_sum' => $item->getTaxSum(),
-            ];
-        }
         return $data;
     }
 
     /**
+     * @return array
+     * @throws InvalidRequestException
+     */
+    private function getDataReceipt(): array
+    {
+        $this->setEmail($this->getTestMode() ? $this->getTestEmail() : $this->getEmail());
+        $this->setPhone($this->getTestMode() ? $this->getTestPhone() : $this->getPhone());
+        if (empty($this->getEmail()) && empty($this->getPhone())) {
+            $this->validate('email', 'phone');
+        }
+
+        $data = [
+            'client' => [
+                'email' => (string) $this->getEmail(),
+                'phone' => (string) $this->getPhone(),
+            ],
+            'company' => $this->getDataCompany(true),
+            'payments' => [
+                [
+                    'sum' => $this->getTotalSum(),
+                    'type' => $this->getTypeSum(),
+                ]
+            ],
+            'total' => $this->getTotalSum(),
+        ];
+
+        /** @var \Omnipay\Atol\Item $item */
+        foreach ($this->getItems() as $item) {
+            $this->validate('name', 'price', 'quantity', 'sum', 'vatType');
+
+            $product = [
+                'name' => $item->getName(),
+                'price' => $item->getPrice(),
+                'quantity' => $item->getQuantity(),
+                'sum' => $item->getSum(),
+                'vat' => [
+                    'type' => $item->getVatType(),
+                    'sum' => $item->getVatSum(),
+                ],
+            ];
+
+            if ($item->getMeasurementUnit() !== null) {
+                $product['measurement_unit'] = $item->getMeasurementUnit();
+            }
+
+            if ($item->getPaymentMethod() !== null) {
+                $product['payment_method'] = $item->getPaymentMethod();
+            }
+
+            $data['items'][] = $product;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Exception
+     */
+    private function getDataCorrection(): array
+    {
+        $this->validate('tax', 'sumTax', 'correctionName', 'correctionNum', 'correctionType', 'correctionDate');
+        $data = [
+            'company' => $this->getDataCompany(),
+            'correction_info' => [
+                'type' => $this->getCorrectionType(),
+                'base_date' => $this->getCorrectionDate(),
+                'base_number' => $this->getCorrectionNum(),
+                'base_name' => $this->getCorrectionName(),
+            ],
+            'payments' => [
+                [
+                    'sum' => $this->getTotalSum(),
+                    'type' => $this->getTypeSum(),
+                ]
+            ],
+            'vats' => [
+                'tax' => $this->getTax(),
+                'sum' => $this->getSumTax(),
+            ],
+        ];
+
+        if (!empty($this->getCashier())) {
+            $data['cashier'] = $this->getCashier();
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param bool $withEmail
+     * @return array
+     * @throws InvalidRequestException
+     */
+    private function getDataCompany(bool $withEmail = false)
+    {
+        $company = [
+            'sno' => $this->getSno(),
+            'inn' => $this->getInn(),
+            'payment_address' => $this->getPaymentAddress(),
+        ];
+
+        if ($withEmail) {
+            $this->validate('emailCompany');
+            $company['email'] = $this->getEmailCompany();
+        }
+
+        return $company;
+    }
+
+    /**
      * Get transaction endpoint.
-     *
      * Authorization of payments is done using the /payment resource.
      *
      * @return string
+     * @throws InvalidRequestException
      */
     protected function getEndpoint()
     {
         $this->validate('groupCode', 'action');
+
         return parent::getEndpoint() . '/' . $this->getGroupCode() . '/' . $this->getAction();
     }
 
@@ -102,8 +175,15 @@ class ActionRequest extends AbstractRestRequest
         return $this->getParameter('action');
     }
 
-    public function setAction($value)
+    /**
+     * @param string $value
+     * @return ActionRequest
+     * @throws InvalidRequestException
+     */
+    public function setAction(string $value)
     {
+        $this->validateValue($value, Constant::getOperations(), 'action');
+
         return $this->setParameter('action', $value);
     }
 
@@ -127,6 +207,26 @@ class ActionRequest extends AbstractRestRequest
         return $this->setParameter('email', $value);
     }
 
+    public function getEmailCompany()
+    {
+        return $this->getParameter('emailCompany');
+    }
+
+    public function setEmailCompany($value)
+    {
+        return $this->setParameter('emailCompany', $value);
+    }
+
+    public function getSumTax()
+    {
+        return $this->getParameter('sumTax');
+    }
+
+    public function setSumTax($value)
+    {
+        return $this->setParameter('sumTax', $value);
+    }
+
     public function getPhone()
     {
         return $this->getParameter('phone');
@@ -144,6 +244,8 @@ class ActionRequest extends AbstractRestRequest
 
     public function setSno($value)
     {
+        $this->validateValue($value, Constant::getSnos(), 'sno');
+
         return $this->setParameter('sno', $value);
     }
 
@@ -154,6 +256,8 @@ class ActionRequest extends AbstractRestRequest
 
     public function setTypeSum($value)
     {
+        $this->validateValue($value, Constant::getPaymentTypes(), 'payment_type');
+
         return $this->setParameter('typeSum', $value);
     }
 
@@ -207,12 +311,78 @@ class ActionRequest extends AbstractRestRequest
         return $this->setParameter('tax', $value);
     }
 
+    public function getCorrectionName()
+    {
+        return $this->getParameter('correctionName');
+    }
+
+    public function setCorrectionName($value)
+    {
+        return $this->setParameter('correctionName', $value);
+    }
+
+    public function getCorrectionNum()
+    {
+        return $this->getParameter('correctionNum');
+    }
+
+    public function setCorrectionNum($value)
+    {
+        return $this->setParameter('correctionNum', $value);
+    }
+
+    /**
+     * @param string $format
+     * @return string
+     * @throws \Exception
+     */
+    public function getCorrectionDate($format = 'd.m.Y H:i:s')
+    {
+        $date = $this->getParameter('correctionDate');
+        if (!($date instanceof DateTime)) {
+            $date = new DateTime($date);
+        }
+
+        return $date->format($format);
+    }
+
+    public function setCorrectionDate($value)
+    {
+        return $this->setParameter('correctionDate', $value);
+    }
+
+    public function getCorrectionType()
+    {
+        return $this->getParameter('correctionType');
+    }
+
+    public function setCorrectionType($value)
+    {
+        return $this->setParameter('correctionType', $value);
+    }
+
+    public function getCashier()
+    {
+        return $this->getParameter('cashier');
+    }
+
+    public function setCashier($value)
+    {
+        return $this->setParameter('cashier', $value);
+    }
+
+    /**
+     * @param string $format
+     * @return string
+     * @throws \Exception
+     */
     public function getDatePayment($format = 'd.m.Y H:i:s')// '29.05.2017 17:56:18',
     {
         $date = $this->getParameter('datePayment');
-        if (!($date instanceof \DateTime)) {
-            $date = new \DateTime($date);
+        if (!($date instanceof DateTime)) {
+            $date = new DateTime($date);
         }
+
         return $date->format($format);
     }
 

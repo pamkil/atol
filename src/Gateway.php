@@ -85,11 +85,11 @@ use Omnipay\Common\AbstractGateway;
  *
  *      $sell->setCallBackUrl('site.ru/atoll')
  *          ->setExternalId(1234213515611)
- *          //->setInn('7729656202')
- *          //->setPaymentAddress('test1.atol.ru')
+ *          ->setInn('7729656202')
+ *          ->setPaymentAddress('test1.atol.ru')
  *          ->setDatePayment('14.06.2017 15:01:01')
  *          ->setEmail('sd@df.ru')
- *          //->setPhone('9123456789') or email or phone
+ *          ->setPhone('9123456789') or email or phone
  *          ->setSno('osn')
  *          ->setTotalSum(15)
  *          ->setTypeSum(1);
@@ -231,7 +231,6 @@ class Gateway extends AbstractGateway
 
         return parent::createRequest($class, $parameters);
     }
-
 
     /**
      * @param array $options

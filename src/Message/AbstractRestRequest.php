@@ -2,6 +2,8 @@
 
 namespace Omnipay\Atol\Message;
 
+use Omnipay\Atol\ItemBag;
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\AbstractRequest;
 
@@ -12,7 +14,7 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 abstract class AbstractRestRequest extends AbstractRequest
 {
-    const API_VERSION = 'v3';
+    const API_VERSION = 'v4';
     protected $liveEndpoint = 'https://online.atol.ru/possystem';
     protected $testEndpoint = 'https://online.atol.ru/possystem';
 
@@ -82,23 +84,23 @@ abstract class AbstractRestRequest extends AbstractRequest
         // Guzzle HTTP Client createRequest does funny things when a GET request
         // has attached data, so don't send the data if the method is GET.
         if ($this->getHttpMethod() == 'GET') {
-            $data['tokenid'] = $this->getToken();
             $httpRequest = $this->httpClient->createRequest(
                 $this->getHttpMethod(),
                 $this->getEndpoint() . '?' . http_build_query($data),
                 [
                     'Accept' => 'application/json',
-                    'Content-type' => 'application/json',
+                    'Content-type' => 'application/json; charset=utf-8',
+                    'Token' => $this->getToken(),
                 ]
             );
         } else {
-            $token['tokenid'] = $this->getToken();
             $httpRequest = $this->httpClient->createRequest(
                 $this->getHttpMethod(),
-                $this->getEndpoint() . '?' . http_build_query($token),
+                $this->getEndpoint(),
                 [
                     'Accept' => 'application/json',
-                    'Content-type' => 'application/json',
+                    'Content-type' => 'application/json; charset=utf-8',
+                    'Token' => $this->getToken(),
                 ],
                 $this->toJSON($data)
             );
@@ -171,5 +173,27 @@ abstract class AbstractRestRequest extends AbstractRequest
     public function setTestPhone($value)
     {
         return $this->setParameter('testPhone', $value);
+    }
+
+    /**
+     * Set the items in this order
+     *
+     * @param ItemBag|array $items An array of items in this order
+     * @return AbstractRequest
+     */
+    public function setItems($items)
+    {
+        if ($items && !$items instanceof ItemBag) {
+            $items = new ItemBag($items);
+        }
+
+        return $this->setParameter('items', $items);
+    }
+
+    public function validateValue($value, array $data, string $key)
+    {
+        if (!isset($data[$value])) {
+            throw new InvalidRequestException("The $key parameter is required");
+        }
     }
 }

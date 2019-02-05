@@ -36,7 +36,7 @@ class RestTokenRequest extends AbstractRestRequest
             $this->getEndpoint(),
             array(
                 'Accept' => 'application/json',
-                'Content-type' => 'application/json',
+                'Content-type' => 'application/json; charset=utf-8',
             ),
             $this->toJSON($data)
         );
