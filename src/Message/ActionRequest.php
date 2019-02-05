@@ -68,7 +68,7 @@ class ActionRequest extends AbstractRestRequest
 
         /** @var \Omnipay\Atol\Item $item */
         foreach ($this->getItems() as $item) {
-            $this->validate('name', 'price', 'quantity', 'sum', 'vatType');
+            $item->validate('name', 'price', 'quantity', 'sum', 'vatType');
 
             $product = [
                 'name' => $item->getName(),
