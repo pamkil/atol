@@ -62,15 +62,19 @@ class Constant
     const VAT_TYPE_VAT20 = 'vat20'; // – НДС чека по ставке 20%;
     const VAT_TYPE_VAT120 = 'vat120'; // – НДС чека по расчетной ставке 20/120.
 
-    const PAYMENT_TYPE_CASHLESS = 1; //безналичный;
-    const PAYMENT_TYPE_ADVANCE = 2; //предварительная оплата (аванс);
-    const PAYMENT_TYPE_CREDIT = 3; //постоплата (кредит);
-    const PAYMENT_TYPE_ANOTHER = 4; //иная форма оплаты (встречное предоставление);
-    const PAYMENT_TYPE_EXTEND_5 = 5; //«5»-«9» – расширенные виды оплаты. Для каждого фискального типа оплаты можно указать расширенный вид оплаты.
+    const PAYMENT_TYPE_CASHLESS = 1; // - безналичный;
+    const PAYMENT_TYPE_ADVANCE = 2; // - предварительная оплата (аванс);
+    const PAYMENT_TYPE_CREDIT = 3; // - постоплата (кредит);
+    const PAYMENT_TYPE_ANOTHER = 4; // - иная форма оплаты (встречное предоставление);
+    const PAYMENT_TYPE_EXTEND_5 = 5; // - «5»-«9» – расширенные виды оплаты. Для каждого фискального типа оплаты можно указать расширенный вид оплаты.
     const PAYMENT_TYPE_EXTEND_6 = 6;
     const PAYMENT_TYPE_EXTEND_7 = 7;
     const PAYMENT_TYPE_EXTEND_8 = 8;
     const PAYMENT_TYPE_EXTEND_9 = 9;
+
+    const STATUS_DONE = 'done'; // - готово;
+    const STATUS_FAIL = 'fail'; // - ошибка;
+    const STATUS_WAIT = 'wait'; // - ожидание.
 
     public static function getOperations()
     {
@@ -172,6 +176,15 @@ class Constant
             static::PAYMENT_TYPE_EXTEND_7 => '«7» расширенные виды оплаты',
             static::PAYMENT_TYPE_EXTEND_8 => '«8» расширенные виды оплаты',
             static::PAYMENT_TYPE_EXTEND_9 => '«9» расширенные виды оплаты',
+        ];
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            static::STATUS_DONE => 'готово',
+            static::STATUS_FAIL => 'ошибка',
+            static::STATUS_WAIT => 'ожидание',
         ];
     }
 }
