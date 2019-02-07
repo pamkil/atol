@@ -7,13 +7,18 @@ use Omnipay\Common\Item as ItemCommon;
 
 class Item extends ItemCommon
 {
+    public function getPrice()
+    {
+        return $this->numberFormat('price');
+    }
+
     /**
      * Return total sum for item product
      * @return float|mixed
      */
     public function getSum()
     {
-        $sum = $this->getParameter('sum');
+        $sum = $this->numberFormat('sum');
 
         if (!isset($sum)) {
             $sum = round($this->getPrice() * $this->getQuantity(), 2);
@@ -39,13 +44,7 @@ class Item extends ItemCommon
      */
     public function getMeasurementUnit()
     {
-        $sum = $this->getParameter('measurementUnit');
-
-        if (!isset($sum)) {
-            $sum = round($this->getPrice() * $this->getQuantity(), 2);
-        }
-
-        return $sum;
+        return $this->getParameter('measurementUnit');
     }
 
     /**
@@ -90,7 +89,7 @@ class Item extends ItemCommon
      */
     public function getVatSum()
     {
-        $sum = $this->getParameter('vatSum');
+        $sum = $this->numberFormat('vatSum');
 
         return $sum;
     }
@@ -115,7 +114,7 @@ class Item extends ItemCommon
      */
     public function setPaymentMethod(string $value)
     {
-        $this->validateValue($value, Constant::getPaymentObjects(), 'payment_object');
+        $this->validateValue($value, Constant::getPaymentMethods(), 'payment_method');
 
         return $this->setParameter('paymentMethod', $value);
     }
@@ -151,9 +150,7 @@ class Item extends ItemCommon
      */
     public function getPaymentObject()
     {
-        $sum = $this->getParameter('paymentObject');
-
-        return $sum;
+        return $this->getParameter('paymentObject');
     }
 
     /**
@@ -188,5 +185,16 @@ class Item extends ItemCommon
         if (!isset($data[$value])) {
             throw new InvalidRequestException("The $key parameter is required");
         }
+    }
+
+    private function numberFormat($key)
+    {
+        $result = $this->getParameter($key);
+
+        if (!isset($result)) {
+            return null;
+        }
+
+        return round($result, 2);
     }
 }

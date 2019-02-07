@@ -152,7 +152,8 @@ abstract class AbstractRestRequest extends AbstractRequest
         if (is_null($this->getParameter($name))){
             return null;
         }
-        return floatval($this->getParameter($name));
+
+        return round(floatval($this->getParameter($name)), 2);
     }
 
     public function getTestEmail()
